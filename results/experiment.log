@@ -1,0 +1,20 @@
+2026-04-18 22:36:08,697  INFO      ======================================================================
+2026-04-18 22:36:08,698  INFO        EDGE DEVICE ENCRYPTION BENCHMARK
+2026-04-18 22:36:08,698  INFO      ======================================================================
+2026-04-18 22:36:08,698  INFO        Algorithms : AES
+2026-04-18 22:36:08,698  INFO        Data sizes : 1KB
+2026-04-18 22:36:08,698  INFO        Iterations : 1
+2026-04-18 22:36:08,698  INFO        Total runs : 2
+2026-04-18 22:36:08,698  INFO      ======================================================================
+2026-04-18 22:36:08,698  INFO      
+──────────────────────────────────────────────────
+2026-04-18 22:36:08,705  INFO        Algorithm: AES  (key=256 bits)
+2026-04-18 22:36:08,705  INFO      ──────────────────────────────────────────────────
+2026-04-18 22:36:08,707  INFO        [AES] data_size=1KB (1024 bytes)
+2026-04-18 22:36:08,779  INFO        [   1/2]  50.0%  AES        enc  1KB    iter=1  time=    19.502ms  throughput=    0.05MB/s
+2026-04-18 22:36:08,832  INFO        [   2/2] 100.0%  AES        dec  1KB    iter=1  time=     1.771ms  throughput=    0.55MB/s
+2026-04-18 22:36:08,834  INFO        [AES] Edge pipeline integrity: ✓ PASS
+2026-04-18 22:36:08,837  INFO      
+  Total benchmark time: 0.14s
+2026-04-18 22:36:08,839  INFO        📄 Results saved to results\benchmark_results.json
+2026-04-18 22:36:08,841  INFO        📄 Results saved to results\benchmark_results.csv

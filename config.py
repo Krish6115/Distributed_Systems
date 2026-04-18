@@ -41,6 +41,12 @@ RESULTS_JSON = f"{RESULTS_DIR}/benchmark_results.json"
 GRAPHS_DIR   = f"{RESULTS_DIR}/graphs"
 
 # ──────────────────────────────────────────────
+# Distributed simulation output paths
+# ──────────────────────────────────────────────
+DISTRIBUTED_RESULTS_DIR = f"{RESULTS_DIR}/distributed"
+DISTRIBUTED_GRAPHS_DIR  = f"{RESULTS_DIR}/distributed_graphs"
+
+# ──────────────────────────────────────────────
 # Logging
 # ──────────────────────────────────────────────
 LOG_FILE = f"{RESULTS_DIR}/experiment.log"
