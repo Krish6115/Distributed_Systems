@@ -159,19 +159,22 @@ def _bytes8_to_int(b: bytes) -> int:
 def _ctr_process(data: bytes, round_keys: list, nonce: bytes) -> bytes:
     """Encrypt / decrypt *data* in CTR mode using PRESENT as the block cipher."""
     nonce_int = int.from_bytes(nonce, "big")  # 4 bytes → 32 bits
+    nonce_shifted = (nonce_int << 32) & 0xFFFFFFFFFFFFFFFF
+    
     out = bytearray()
     block_count = (len(data) + 7) // 8
 
     for ctr in range(block_count):
         # Counter block: upper 32 = nonce, lower 32 = counter
-        counter_block = ((nonce_int << 32) | ctr) & 0xFFFFFFFFFFFFFFFF
+        counter_block = nonce_shifted | ctr
         keystream_block = _encrypt_block(counter_block, round_keys)
-        ks_bytes = _int_to_bytes8(keystream_block)
+        ks_bytes = keystream_block.to_bytes(8, "big")
 
         start = ctr * 8
-        end = min(start + 8, len(data))
+        end = start + 8
         chunk = data[start:end]
-        out.extend(b ^ k for b, k in zip(chunk, ks_bytes[:len(chunk)]))
+        # Direct generator XOR is slightly faster than byte-by-byte append
+        out.extend(b ^ k for b, k in zip(chunk, ks_bytes))
 
     return bytes(out)
 

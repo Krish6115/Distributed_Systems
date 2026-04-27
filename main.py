@@ -190,7 +190,7 @@ def save_results(results: List[Dict], output_dir: str):
 def print_summary(results: List[Dict]):
     """Print a nicely formatted console summary using pandas aggregation."""
     print("\n" + "=" * 80)
-    print("  📊  BENCHMARK SUMMARY")
+    print("  [RESULTS]  BENCHMARK SUMMARY")
     print("=" * 80)
 
     # ── Build DataFrame & aggregate via pandas (idiomatic, scalable) ──
@@ -230,19 +230,19 @@ def print_summary(results: List[Dict]):
                "Avg Mem (KB)", "Avg Throughput (MB/s)"]
 
     # ── Encryption summary ──
-    print("\n  ▸ ENCRYPTION (averaged across all sizes & iterations)\n")
+    print("\n  >> ENCRYPTION (averaged across all sizes & iterations)\n")
     print(tabulate(_format_table("encrypt"), headers=headers,
                    tablefmt="fancy_grid", numalign="right"))
 
     # ── Decryption summary ──
-    print("\n  ▸ DECRYPTION (averaged across all sizes & iterations)\n")
+    print("\n  >> DECRYPTION (averaged across all sizes & iterations)\n")
     print(tabulate(_format_table("decrypt"), headers=headers,
                    tablefmt="fancy_grid", numalign="right"))
 
     # ── Best-algorithm recommendation (pandas-driven) ──
-    print("\n" + "─" * 80)
-    print("  🏆  RECOMMENDATION FOR EDGE DEVICES")
-    print("─" * 80)
+    print("\n" + "-" * 80)
+    print("  [TROPHY]  RECOMMENDATION FOR EDGE DEVICES")
+    print("-" * 80)
 
     enc_df = df[df["operation"] == "encrypt"]
     if not enc_df.empty:
@@ -255,16 +255,42 @@ def print_summary(results: List[Dict]):
         best_mem   = enc_agg["memory_peak_kb"].idxmin()
         best_cpu   = enc_agg["cpu_percent"].idxmin()
 
-        print(f"\n  ⚡ Fastest throughput  : {best_speed}")
-        print(f"  🧠 Lowest memory      : {best_mem}")
-        print(f"  💻 Lowest CPU usage   : {best_cpu}")
+        print(f"\n  [FAST] Fastest throughput  : {best_speed}")
+        print(f"  [MEM]  Lowest memory      : {best_mem}")
+        print(f"  [CPU]  Lowest CPU usage   : {best_cpu}")
+
+        # ── Overall Best Algorithm (composite scoring) ──
+        # Rank each algorithm across 4 metrics; lower rank = better
+        # throughput: higher is better; time, cpu, memory: lower is better
+        scores = {}
+        algos = list(enc_agg.index)
+        rank_throughput = enc_agg["throughput_mbps"].rank(ascending=False)
+        rank_time       = enc_agg["elapsed_time_ms"].rank(ascending=True)
+        rank_cpu        = enc_agg["cpu_percent"].rank(ascending=True)
+        rank_mem        = enc_agg["memory_peak_kb"].rank(ascending=True)
+
+        for algo in algos:
+            scores[algo] = (rank_throughput[algo] + rank_time[algo] +
+                            rank_cpu[algo] + rank_mem[algo])
+
+        overall_best = min(scores, key=scores.get)
+
+        print(f"\n  {'='*60}")
+        print(f"  [BEST OVERALL] >>> {overall_best} <<<")
+        print(f"  {'='*60}")
+        print(f"  (Composite score based on throughput, latency, CPU, memory)")
+        print(f"  Scores: ", end="")
+        for algo in algos:
+            marker = " *** " if algo == overall_best else "     "
+            print(f"{marker}{algo}={scores[algo]:.1f}", end="")
+        print()
 
     print()
-    print("  💡 For resource‑constrained edge devices:")
-    print("     • AES‑256‑GCM excels on hardware with AES‑NI support")
-    print("     • ChaCha20‑Poly1305 is optimal for software‑only ARM/RISC‑V")
-    print("     • SPECK offers the best speed‑to‑gate‑count ratio")
-    print("     • PRESENT is designed for ultra‑low gate count (RFID/smart cards)")
+    print("  [TIP] For resource-constrained edge devices:")
+    print("     - AES-256-GCM excels on hardware with AES-NI support")
+    print("     - ChaCha20-Poly1305 is optimal for software-only ARM/RISC-V")
+    print("     - SPECK offers the best speed-to-gate-count ratio")
+    print("     - PRESENT is designed for ultra-low gate count (RFID/smart cards)")
     print("=" * 80 + "\n")
 
 
@@ -295,7 +321,7 @@ Examples:
         nargs="+",
         choices=list(config.DATA_SIZES.keys()),
         default=list(config.DATA_SIZES.keys()),
-        help="Data sizes to test (default: 1KB 10KB 100KB 1MB)",
+        help="Data sizes to test (default: 1KB 10KB 100KB)",
     )
     parser.add_argument(
         "--iterations", "-n",

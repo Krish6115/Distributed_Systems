@@ -1,0 +1,53 @@
+2026-04-27 14:43:23,335  INFO      ======================================================================
+2026-04-27 14:43:23,335  INFO        DISTRIBUTED EDGE COMPUTING SIMULATION
+2026-04-27 14:43:23,335  INFO      ======================================================================
+2026-04-27 14:43:23,338  INFO        Algorithms  : AES, ChaCha20, PRESENT, SPECK
+2026-04-27 14:43:23,338  INFO        Scenarios  : Small Scale, Medium Scale, Large Scale
+2026-04-27 14:43:23,338  INFO        Data size   : 102400 bytes total
+2026-04-27 14:43:23,338  INFO      ======================================================================
+2026-04-27 14:43:23,338  INFO      
+============================================================
+2026-04-27 14:43:23,338  INFO        SCENARIO: Small Scale
+2026-04-27 14:43:23,338  INFO        Area=1.0 km2  Density=5.0 nodes/km2  N=5
+2026-04-27 14:43:23,338  INFO        Single building / small factory floor
+2026-04-27 14:43:23,338  INFO      ============================================================
+2026-04-27 14:43:23,338  INFO        [AES] Scenario 'Small Scale': Area=1.0 km², Density=5.0 nodes/km², N=5 nodes
+2026-04-27 14:43:25,642  INFO        [AES] OK  nodes=5  throughput=99.35 MB/s  avg_latency=13.312 ms  integrity=PASS
+2026-04-27 14:43:25,649  INFO        [ChaCha20] Scenario 'Small Scale': Area=1.0 km², Density=5.0 nodes/km², N=5 nodes
+2026-04-27 14:43:27,584  INFO        [ChaCha20] OK  nodes=5  throughput=113.98 MB/s  avg_latency=1.916 ms  integrity=PASS
+2026-04-27 14:43:27,584  INFO        [PRESENT] Scenario 'Small Scale': Area=1.0 km², Density=5.0 nodes/km², N=5 nodes
+2026-04-27 14:43:40,479  INFO        [PRESENT] OK  nodes=5  throughput=0.09 MB/s  avg_latency=1042.977 ms  integrity=PASS
+2026-04-27 14:43:40,479  INFO        [SPECK] Scenario 'Small Scale': Area=1.0 km², Density=5.0 nodes/km², N=5 nodes
+2026-04-27 14:43:43,068  INFO        [SPECK] OK  nodes=5  throughput=2.01 MB/s  avg_latency=48.797 ms  integrity=PASS
+2026-04-27 14:43:43,068  INFO      
+============================================================
+2026-04-27 14:43:43,069  INFO        SCENARIO: Medium Scale
+2026-04-27 14:43:43,069  INFO        Area=10.0 km2  Density=10.0 nodes/km2  N=100
+2026-04-27 14:43:43,069  INFO        Campus / industrial park
+2026-04-27 14:43:43,069  INFO      ============================================================
+2026-04-27 14:43:43,069  INFO        [AES] Scenario 'Medium Scale': Area=10.0 km², Density=10.0 nodes/km², N=100 nodes
+2026-04-27 14:43:48,436  INFO        [AES] OK  nodes=100  throughput=217.27 MB/s  avg_latency=2.242 ms  integrity=PASS
+2026-04-27 14:43:48,436  INFO        [ChaCha20] Scenario 'Medium Scale': Area=10.0 km², Density=10.0 nodes/km², N=100 nodes
+2026-04-27 14:43:53,576  INFO        [ChaCha20] OK  nodes=100  throughput=319.70 MB/s  avg_latency=0.560 ms  integrity=PASS
+2026-04-27 14:43:53,578  INFO        [PRESENT] Scenario 'Medium Scale': Area=10.0 km², Density=10.0 nodes/km², N=100 nodes
+2026-04-27 14:44:08,042  INFO        [PRESENT] OK  nodes=100  throughput=0.76 MB/s  avg_latency=132.290 ms  integrity=PASS
+2026-04-27 14:44:08,042  INFO        [SPECK] Scenario 'Medium Scale': Area=10.0 km², Density=10.0 nodes/km², N=100 nodes
+2026-04-27 14:44:13,401  INFO        [SPECK] OK  nodes=100  throughput=19.12 MB/s  avg_latency=5.725 ms  integrity=PASS
+2026-04-27 14:44:13,403  INFO      
+============================================================
+2026-04-27 14:44:13,403  INFO        SCENARIO: Large Scale
+2026-04-27 14:44:13,403  INFO        Area=100.0 km2  Density=10.0 nodes/km2  N=1000
+2026-04-27 14:44:13,403  INFO        City district / smart-city deployment
+2026-04-27 14:44:13,404  INFO      ============================================================
+2026-04-27 14:44:13,404  INFO        [AES] Scenario 'Large Scale': Area=100.0 km², Density=10.0 nodes/km², N=1000 nodes
+2026-04-27 14:44:19,353  INFO        [AES] OK  nodes=1000  throughput=205.55 MB/s  avg_latency=1.160 ms  integrity=PASS
+2026-04-27 14:44:19,354  INFO        [ChaCha20] Scenario 'Large Scale': Area=100.0 km², Density=10.0 nodes/km², N=1000 nodes
+2026-04-27 14:44:27,387  INFO        [ChaCha20] OK  nodes=1000  throughput=289.61 MB/s  avg_latency=0.582 ms  integrity=PASS
+2026-04-27 14:44:27,388  INFO        [PRESENT] Scenario 'Large Scale': Area=100.0 km², Density=10.0 nodes/km², N=1000 nodes
+2026-04-27 14:44:46,909  INFO        [PRESENT] OK  nodes=1000  throughput=5.15 MB/s  avg_latency=22.150 ms  integrity=PASS
+2026-04-27 14:44:46,911  INFO        [SPECK] Scenario 'Large Scale': Area=100.0 km², Density=10.0 nodes/km², N=1000 nodes
+2026-04-27 14:44:54,242  INFO        [SPECK] OK  nodes=1000  throughput=123.22 MB/s  avg_latency=1.065 ms  integrity=PASS
+2026-04-27 14:44:54,242  INFO      
+  Total simulation time: 90.90s
+2026-04-27 14:44:54,392  INFO        [FILE] Summary results saved to results\distributed\distributed_results.json
+2026-04-27 14:44:54,485  INFO        [FILE] Per-node results saved to results\distributed\distributed_results.csv

@@ -67,8 +67,8 @@ class BenchmarkProfiler:
         self.result = BenchmarkResult(data_size_bytes=data_size_bytes)
 
     def __enter__(self):
-        # Prime CPU measurement (first call returns 0.0 on some platforms)
-        self._process.cpu_percent(interval=None)
+        # Prime CPU measurement
+        self._start_cpu_times = self._process.cpu_times()
 
         # Start memory tracking
         tracemalloc.start()
@@ -81,8 +81,17 @@ class BenchmarkProfiler:
         # Elapsed time
         self.result.elapsed_time_s = time.perf_counter() - self._start_time
 
-        # CPU usage (percentage over the profiled interval)
-        self.result.cpu_percent = self._process.cpu_percent(interval=None)
+        # CPU usage (calculate from process CPU times)
+        end_cpu_times = self._process.cpu_times()
+        cpu_time_used = (end_cpu_times.user - self._start_cpu_times.user) + \
+                        (end_cpu_times.system - self._start_cpu_times.system)
+        
+        if self.result.elapsed_time_s > 0:
+            cpu_percent = (cpu_time_used / self.result.elapsed_time_s) * 100.0
+            # Cap at 100% per core to avoid weird precision spikes
+            self.result.cpu_percent = min(cpu_percent, 100.0 * psutil.cpu_count())
+        else:
+            self.result.cpu_percent = 0.0
 
         # Peak memory (KB)
         _, peak = tracemalloc.get_traced_memory()

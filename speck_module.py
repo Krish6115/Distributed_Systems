@@ -110,20 +110,21 @@ def _words_to_bytes(x: int, y: int) -> bytes:
 def _ctr_process(data: bytes, round_keys: list, nonce: bytes) -> bytes:
     """Encrypt / decrypt *data* in CTR mode using SPECK 64/128."""
     nonce_int = int.from_bytes(nonce, "big")  # 32 bits
+    upper = nonce_int & WORD_MASK
+    
     out = bytearray()
     block_count = (len(data) + BLOCK_SIZE - 1) // BLOCK_SIZE
 
     for ctr in range(block_count):
         # Counter block: upper 32 = nonce, lower 32 = counter
-        upper = nonce_int & WORD_MASK
         lower = ctr & WORD_MASK
         ex, ey = _encrypt_block(upper, lower, round_keys)
-        ks_bytes = _words_to_bytes(ex, ey)
+        ks_bytes = ex.to_bytes(4, "big") + ey.to_bytes(4, "big")
 
         start = ctr * BLOCK_SIZE
-        end = min(start + BLOCK_SIZE, len(data))
+        end = start + BLOCK_SIZE
         chunk = data[start:end]
-        out.extend(b ^ k for b, k in zip(chunk, ks_bytes[:len(chunk)]))
+        out.extend(b ^ k for b, k in zip(chunk, ks_bytes))
 
     return bytes(out)
 
