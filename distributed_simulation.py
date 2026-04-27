@@ -173,14 +173,43 @@ def _edge_node_task(
     """
     module = ALGO_MODULES[algo_name]
     proc = psutil.Process(os.getpid())
-    proc.cpu_percent(interval=None)  # prime CPU measurement
 
     # ── Encrypt ──
+    start_cpu = proc.cpu_times()
     t0 = time.perf_counter()
     nonce, ciphertext, tag = module.encrypt(data_chunk, key)
     encrypt_time = time.perf_counter() - t0
+    end_cpu = proc.cpu_times()
 
-    cpu = proc.cpu_percent(interval=None)
+    # ── CPU measurement ──
+    # Use cpu_times() delta for accuracy.  If the operation was too fast
+    # for the OS timer resolution (~15.6 ms on Windows), run a calibration
+    # loop to get a real reading instead of reporting 0%.
+    cpu_delta = (end_cpu.user - start_cpu.user) + \
+                (end_cpu.system - start_cpu.system)
+
+    if encrypt_time > 0 and cpu_delta > 0:
+        cpu = min((cpu_delta / encrypt_time) * 100.0,
+                  100.0 * psutil.cpu_count())
+    elif encrypt_time > 0:
+        # Calibration: repeat encrypt in a tight loop for ≥250 ms
+        _MIN_WINDOW = 0.25
+        n_iters = min(max(1, int(_MIN_WINDOW / encrypt_time) + 1), 50000)
+        cal_cpu_start = proc.cpu_times()
+        cal_wall_start = time.perf_counter()
+        for _ in range(n_iters):
+            module.encrypt(data_chunk, key)
+        cal_wall = time.perf_counter() - cal_wall_start
+        cal_cpu_end = proc.cpu_times()
+        cal_delta = (cal_cpu_end.user - cal_cpu_start.user) + \
+                    (cal_cpu_end.system - cal_cpu_start.system)
+        if cal_wall > 0 and cal_delta > 0:
+            cpu = min((cal_delta / cal_wall) * 100.0,
+                      100.0 * psutil.cpu_count())
+        else:
+            cpu = 100.0  # purely CPU-bound fallback
+    else:
+        cpu = 0.0
 
     # ── Simulate network delay (edge → aggregator) ──
     time.sleep(EDGE_TO_AGGREGATOR_DELAY_SEC)

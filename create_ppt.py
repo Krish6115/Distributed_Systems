@@ -232,8 +232,8 @@ for i, fname in enumerate(["throughput.png", "cpu_usage.png"]):
         sl.shapes.add_picture(path, Inches(0.5 + i*6.3), Inches(1.5), Inches(6.0), Inches(3.5))
     else:
         add_text(sl, 0.5 + i*6.3, 2.5, 6.0, 1.0, f"[{fname}]", size=14, color=GRAY, align=PP_ALIGN.CENTER)
-add_text(sl, 0.8, 5.3, 11.7, 0.4, "- AES & ChaCha20 achieve ~65-67 MB/s at 100KB. PRESENT and SPECK are orders of magnitude slower in pure Python.", size=15, color=DARK)
-add_text(sl, 0.8, 5.8, 11.7, 0.4, "- Lightweight ciphers saturate a single CPU core (~95-100%) due to intensive bit manipulation in Python.", size=15, color=DARK)
+add_text(sl, 0.8, 5.3, 11.7, 0.4, "- AES achieves ~94 MB/s and ChaCha20 ~50 MB/s at 100KB. PRESENT and SPECK are orders of magnitude slower in pure Python.", size=15, color=DARK)
+add_text(sl, 0.8, 5.8, 11.7, 0.4, "- All algorithms show real measured CPU utilization (~88-179%) thanks to calibrated cpu_times() profiling.", size=15, color=DARK)
 
 # ═══ SLIDE 11: Results - Enc/Dec Time ═══
 sl = prs.slides.add_slide(prs.slide_layouts[6]); add_bg(sl); add_title(sl, "Results: Encryption & Decryption Time")
@@ -243,8 +243,8 @@ for i, fname in enumerate(["encryption_time.png", "decryption_time.png"]):
         sl.shapes.add_picture(path, Inches(0.5 + i*6.3), Inches(1.5), Inches(6.0), Inches(3.5))
     else:
         add_text(sl, 0.5 + i*6.3, 2.5, 6.0, 1.0, f"[{fname}]", size=14, color=GRAY, align=PP_ALIGN.CENTER)
-add_text(sl, 0.8, 5.3, 11.7, 0.4, "- PRESENT: ~37s for 100KB encryption. SPECK: ~3s for 100KB. AES/ChaCha20: <2ms for 100KB.", size=15, color=DARK)
-add_text(sl, 0.8, 5.8, 11.7, 0.4, "- Time scales linearly with data size for all algorithms, confirming O(n) complexity.", size=15, color=DARK)
+add_text(sl, 0.8, 5.3, 11.7, 0.4, "- PRESENT: ~127s for 100KB encryption. SPECK: ~5.6s for 100KB. AES: ~1.2ms, ChaCha20: ~2.1ms for 100KB.", size=15, color=DARK)
+add_text(sl, 0.8, 5.8, 11.7, 0.4, "- Time scales linearly with data size for all algorithms, confirming O(n) complexity. Log-scale Y-axis used to show all bars.", size=15, color=DARK)
 
 # ═══ SLIDE 12: Results - Memory & Dashboard ═══
 sl = prs.slides.add_slide(prs.slide_layouts[6]); add_bg(sl); add_title(sl, "Results: Memory & Summary Dashboard")
@@ -254,7 +254,7 @@ for i, fname in enumerate(["memory_usage.png", "summary_dashboard.png"]):
         sl.shapes.add_picture(path, Inches(0.5 + i*6.3), Inches(1.5), Inches(6.0), Inches(3.5))
     else:
         add_text(sl, 0.5 + i*6.3, 2.5, 6.0, 1.0, f"[{fname}]", size=14, color=GRAY, align=PP_ALIGN.CENTER)
-add_text(sl, 0.8, 5.3, 11.7, 0.4, "- At 100KB: AES ~102KB, ChaCha20 ~100KB, PRESENT ~210KB, SPECK ~210KB peak memory.", size=15, color=DARK)
+add_text(sl, 0.8, 5.3, 11.7, 0.4, "- At 100KB: AES ~202KB, ChaCha20 ~201KB, PRESENT ~211KB, SPECK ~210KB peak memory.", size=15, color=DARK)
 
 # ═══ SLIDE 13: Results Summary Table (PROPER TABLE) ═══
 sl = prs.slides.add_slide(prs.slide_layouts[6]); add_bg(sl); add_title(sl, "Results: Summary Table & Best Algorithm")
@@ -262,16 +262,39 @@ add_text(sl, 0.8, 1.3, 11.7, 0.4, "Encryption Performance (averaged across 1KB, 
 add_table(sl, 0.8, 1.8, 11.7, 2.5,
     ["Algorithm", "Avg Time (ms)", "Avg CPU %", "Avg Memory (KB)", "Avg Throughput (MB/s)", "Composite Score"],
     [
-        ["AES-256-GCM", "3.811", "65.5", "51.6", "27.14", "7.0"],
-        ["ChaCha20-Poly1305", "0.993", "120.0", "39.0", "29.85", "7.0"],
-        ["PRESENT-80", "13,783.90", "96.2", "79.1", "0.003", "15.0"],
-        ["SPECK-64/128", "1,181.88", "85.7", "79.0", "0.04", "11.0"],
+        ["AES-256-GCM", "1.06", "179.1", "76.5", "35.80", "6.0"],
+        ["ChaCha20-Poly1305", "1.16", "143.1", "75.0", "22.69", "7.0"],
+        ["PRESENT-80", "48,294.17", "88.6", "78.8", "0.001", "14.0"],
+        ["SPECK-64/128", "2,091.74", "95.3", "78.7", "0.017", "13.0"],
     ], font_size=13)
 add_text(sl, 0.8, 4.6, 11.7, 0.4, "Scoring: Each algorithm ranked 1-4 on throughput, latency, CPU, memory. Sum of ranks = composite score. Lower = better.", size=13, color=GRAY)
-add_text(sl, 0.8, 5.1, 11.7, 0.5, "BEST OVERALL (tied): AES-256-GCM & ChaCha20-Poly1305 (Score: 7.0)", size=18, bold=True, color=BLUE, align=PP_ALIGN.CENTER)
-add_text(sl, 0.8, 5.7, 11.7, 0.4, "- AES wins on CPU (hardware AES-NI). ChaCha20 wins on throughput & memory. On devices without AES-NI, ChaCha20 is the clear winner.", size=14, color=DARK)
+add_text(sl, 0.8, 5.1, 11.7, 0.5, "BEST OVERALL: AES-256-GCM (Score: 6.0)", size=18, bold=True, color=BLUE, align=PP_ALIGN.CENTER)
+add_text(sl, 0.8, 5.7, 11.7, 0.4, "- AES wins on latency & throughput (hardware AES-NI). ChaCha20 is the best choice on devices without AES-NI hardware.", size=14, color=DARK)
 
-# ═══ SLIDE 14: Distributed Scalability ═══
+# ═══ SLIDE 14: Why Single-Node + Why Distributed ═══
+sl = prs.slides.add_slide(prs.slide_layouts[6]); add_bg(sl); add_title(sl, "Why Single-Node Benchmarking & Why Distributed Systems?")
+add_bullet_slide(sl, 0.8, 1.4, 5.3, 5.5, [
+    "Why Single-Node First?",
+    "",
+    "1. Establishes the Baseline: You cannot measure distributed scalability without knowing what 1 node can do. Single-node results provide the denominator for the Scalability Factor.",
+    "",
+    "2. Finds Optimal Packet Size: Testing 1KB, 10KB, 100KB reveals each algorithm's setup overhead vs. processing cost curve, identifying the ideal network packet size.",
+    "",
+    "3. Proves Hardware Feasibility: Isolates exact CPU% and peak RAM per device, proving the algorithm is physically deployable on constrained IoT hardware.",
+], size=14)
+add_bullet_slide(sl, 6.5, 1.4, 5.8, 5.5, [
+    "Why Distributed Systems?",
+    "",
+    "1. Real-World Scale: IoT deployments have thousands of nodes encrypting concurrently. A single-node test cannot capture inter-node overhead or parallel contention.",
+    "",
+    "2. Scalability Proof: By distributing a fixed 100KB workload across N=5 to N=1000 nodes, we prove near-linear throughput scaling for AES/ChaCha20.",
+    "",
+    "3. Data Sovereignty: Encrypting at the edge (not cloud) keeps plaintext off the network. This architecture tolerates compromised intermediate nodes.",
+    "",
+    "4. Key Finding: AES/ChaCha20 scale almost perfectly. PRESENT/SPECK's process overhead exceeds their encryption time at high node counts.",
+], size=14)
+
+# ═══ SLIDE 15: Distributed Scalability ═══
 sl = prs.slides.add_slide(prs.slide_layouts[6]); add_bg(sl); add_title(sl, "Results: Scalability & Distributed Performance")
 path = os.path.join(dist_graphs_dir, "scalability_dashboard.png")
 if os.path.exists(path):

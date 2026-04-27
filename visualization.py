@@ -2,7 +2,7 @@
 visualization.py — Graph generation for encryption benchmark results.
 
 Reads the structured CSV/JSON results produced by main.py and generates
-publication‑quality comparison charts:
+publication-quality comparison charts:
 
     1. Encryption Time vs Algorithm (grouped by data size)
     2. Decryption Time vs Algorithm
@@ -12,6 +12,10 @@ publication‑quality comparison charts:
     6. Combined summary dashboard
 
 All graphs are saved to the results/graphs/ directory.
+
+NOTE: Metrics with huge dynamic range (e.g. AES ~1 ms vs PRESENT ~37 000 ms)
+use a **logarithmic Y-axis** and **value labels** on every bar so that no
+algorithm is invisible regardless of scale differences.
 """
 
 import os
@@ -21,13 +25,14 @@ from collections import defaultdict
 from typing import List, Dict
 
 import matplotlib
-matplotlib.use("Agg")  # non‑interactive backend
+matplotlib.use("Agg")  # non-interactive backend
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import numpy as np
 
 from config import GRAPHS_DIR, RESULTS_JSON, ALGORITHMS
 
-# ── Style constants ─────────────────────────────────────────────────
+# -- Style constants ----------------------------------------------------------
 COLORS = {
     "AES":      "#2563eb",   # blue
     "ChaCha20": "#16a34a",   # green
@@ -63,6 +68,41 @@ def _aggregate(results: List[Dict], operation: str, metric: str):
     return agg
 
 
+def _needs_log_scale(data, size_order):
+    """Return True if the value range across algorithms is > 100x."""
+    all_vals = []
+    for algo_vals in data.values():
+        for s in size_order:
+            v = algo_vals.get(s, 0)
+            if v > 0:
+                all_vals.append(v)
+    if not all_vals:
+        return False
+    return max(all_vals) / max(min(all_vals), 1e-12) > 100
+
+
+def _add_bar_labels(ax, bars, fontsize=8, use_log=False):
+    """Add value labels on top of each bar so every value is visible."""
+    for bar in bars:
+        h = bar.get_height()
+        if h <= 0:
+            continue
+        # Format: use scientific for very small, compact for large
+        if h >= 1000:
+            label = f"{h:,.0f}"
+        elif h >= 1:
+            label = f"{h:.2f}"
+        elif h >= 0.001:
+            label = f"{h:.4f}"
+        else:
+            label = f"{h:.2e}"
+        ax.text(
+            bar.get_x() + bar.get_width() / 2, h, label,
+            ha="center", va="bottom", fontsize=fontsize,
+            fontweight="bold", rotation=45,
+        )
+
+
 def _plot_grouped_bar(
     data,
     title: str,
@@ -73,17 +113,22 @@ def _plot_grouped_bar(
     """
     Generic grouped bar chart — one group per data size,
     one bar per algorithm.
+
+    Automatically uses log scale when the value range across
+    algorithms exceeds 100x, and adds numeric labels on every bar.
     """
     fig, ax = plt.subplots(figsize=(10, 6))
     n_algorithms = len(ALGORITHMS)
     x_indices = range(len(size_order))
+    use_log = _needs_log_scale(data, size_order)
 
+    all_bars = []
     for i, algo in enumerate(ALGORITHMS):
         if algo not in data:
             continue
         values = [data[algo].get(s, 0) for s in size_order]
         offsets = [x + i * BAR_WIDTH for x in x_indices]
-        ax.bar(
+        bars = ax.bar(
             offsets, values,
             width=BAR_WIDTH,
             label=algo,
@@ -91,6 +136,16 @@ def _plot_grouped_bar(
             edgecolor="white",
             linewidth=0.5,
         )
+        all_bars.extend(bars)
+
+    # Log scale for metrics with huge dynamic range
+    if use_log:
+        ax.set_yscale("log")
+        ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
+        ax.yaxis.get_major_formatter().set_scientific(False)
+
+    # Value labels on every bar
+    _add_bar_labels(ax, all_bars, fontsize=7, use_log=use_log)
 
     ax.set_xlabel("Data Size", fontweight="bold")
     ax.set_ylabel(ylabel, fontweight="bold")
@@ -104,7 +159,7 @@ def _plot_grouped_bar(
     os.makedirs(GRAPHS_DIR, exist_ok=True)
     fig.savefig(os.path.join(GRAPHS_DIR, filename), dpi=150)
     plt.close(fig)
-    print(f"  ✓ saved {filename}")
+    print(f"  [OK] saved {filename}")
 
 
 def plot_encryption_time(results):
@@ -154,7 +209,8 @@ def plot_throughput(results):
 
 def plot_summary_dashboard(results):
     """
-    Create a 2×3 dashboard summarising all key metrics in one figure.
+    Create a 2x3 dashboard summarising all key metrics in one figure.
+    Uses log scale where needed so no algorithm bar disappears.
     """
     fig, axes = plt.subplots(2, 3, figsize=(18, 10))
     fig.suptitle(
@@ -176,15 +232,23 @@ def plot_summary_dashboard(results):
         sizes = list(list(data.values())[0].keys()) if data else []
         n = len(ALGORITHMS)
         x = range(len(sizes))
+        use_log = _needs_log_scale(data, sizes)
 
+        all_bars = []
         for i, algo in enumerate(ALGORITHMS):
             if algo not in data:
                 continue
             vals = [data[algo].get(s, 0) for s in sizes]
             offsets = [xi + i * BAR_WIDTH for xi in x]
-            ax.bar(offsets, vals, BAR_WIDTH,
+            bars = ax.bar(offsets, vals, BAR_WIDTH,
                    label=algo, color=COLORS.get(algo, "#888"),
                    edgecolor="white", linewidth=0.4)
+            all_bars.extend(bars)
+
+        if use_log:
+            ax.set_yscale("log")
+
+        _add_bar_labels(ax, all_bars, fontsize=6, use_log=use_log)
 
         ax.set_title(label, fontsize=11, fontweight="bold")
         ax.set_xticks([xi + BAR_WIDTH * (n - 1) / 2 for xi in x])
@@ -205,7 +269,7 @@ def plot_summary_dashboard(results):
     path = os.path.join(GRAPHS_DIR, "summary_dashboard.png")
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  ✓ saved summary_dashboard.png")
+    print(f"  [OK] saved summary_dashboard.png")
 
 
 def generate_all_graphs(results=None):
@@ -213,7 +277,7 @@ def generate_all_graphs(results=None):
     if results is None:
         results = _load_results()
 
-    print("\n📊 Generating comparison graphs...")
+    print("\n[GRAPHS] Generating comparison graphs...")
     plot_encryption_time(results)
     plot_decryption_time(results)
     plot_cpu_usage(results)

@@ -23,6 +23,12 @@ import os
 from dataclasses import dataclass, field
 from typing import Optional, Dict, Any
 
+# ── Constants ───────────────────────────────────────────────────────
+# Minimum wall-clock window (seconds) needed for psutil.cpu_times()
+# to register a non-zero delta.  Windows has ~15.6 ms timer granularity,
+# so we use 250 ms to guarantee several ticks and a stable reading.
+_MIN_CPU_WINDOW_S = 0.25
+
 
 @dataclass
 class BenchmarkResult:
@@ -85,10 +91,14 @@ class BenchmarkProfiler:
         end_cpu_times = self._process.cpu_times()
         cpu_time_used = (end_cpu_times.user - self._start_cpu_times.user) + \
                         (end_cpu_times.system - self._start_cpu_times.system)
-        
+
         if self.result.elapsed_time_s > 0:
-            cpu_percent = (cpu_time_used / self.result.elapsed_time_s) * 100.0
-            # Cap at 100% per core to avoid weird precision spikes
+            if cpu_time_used > 0:
+                cpu_percent = (cpu_time_used / self.result.elapsed_time_s) * 100.0
+            else:
+                # Operation finished too fast for cpu_times() resolution.
+                # Mark as -1.0 so run_benchmark() knows to calibrate.
+                cpu_percent = -1.0
             self.result.cpu_percent = min(cpu_percent, 100.0 * psutil.cpu_count())
         else:
             self.result.cpu_percent = 0.0
@@ -108,6 +118,58 @@ class BenchmarkProfiler:
             self.result.throughput_mbps = float("inf")
 
         return False  # don't suppress exceptions
+
+
+def calibrate_cpu(func, args, kwargs, single_run_time_s):
+    """
+    Measure true CPU utilisation by repeating *func* enough times for
+    psutil.cpu_times() to register a measurable delta.
+
+    This is called automatically when a single invocation is too fast
+    for the OS process-time counter (~15.6 ms resolution on Windows).
+
+    Parameters
+    ----------
+    func : callable
+        The encrypt / decrypt function to profile.
+    args : tuple
+        Positional arguments forwarded to *func*.
+    kwargs : dict
+        Keyword arguments forwarded to *func*.
+    single_run_time_s : float
+        Elapsed wall-clock time of one invocation (used to estimate
+        how many repetitions are needed).
+
+    Returns
+    -------
+    float
+        Measured CPU utilisation as a percentage (e.g. 95.3).
+    """
+    process = psutil.Process(os.getpid())
+
+    # Estimate iterations needed to fill the measurement window
+    if single_run_time_s > 0:
+        n_iters = max(1, int(_MIN_CPU_WINDOW_S / single_run_time_s) + 1)
+    else:
+        n_iters = 5000
+    n_iters = min(n_iters, 50000)  # safety cap
+
+    start_cpu = process.cpu_times()
+    start_wall = time.perf_counter()
+
+    for _ in range(n_iters):
+        func(*args, **kwargs)
+
+    wall_time = time.perf_counter() - start_wall
+    end_cpu = process.cpu_times()
+    cpu_delta = (end_cpu.user - start_cpu.user) + \
+                (end_cpu.system - start_cpu.system)
+
+    if wall_time > 0 and cpu_delta > 0:
+        return min((cpu_delta / wall_time) * 100.0, 100.0 * psutil.cpu_count())
+
+    # Fallback: purely CPU-bound with no I/O waits → ~100% of one core
+    return 100.0
 
 
 def run_benchmark(
@@ -149,11 +211,19 @@ def run_benchmark(
     with BenchmarkProfiler(data_size_bytes) as prof:
         result_data = func(*args, **kwargs)
 
+    res = prof.result
+
+    # ── CPU calibration for fast operations ──────────────────────────
+    # If the single run was too fast for cpu_times() resolution (marked
+    # as -1.0 by the profiler), repeat the function in a tight loop for
+    # ~250 ms to accumulate a measurable CPU-time delta.
+    if res.cpu_percent < 0:
+        res.cpu_percent = calibrate_cpu(func, args, kwargs, res.elapsed_time_s)
+
     # Simulate edge / network transmission delay between encrypt → decrypt
     if edge_delay > 0:
         time.sleep(edge_delay)
 
-    res = prof.result
     res.algorithm = algorithm
     res.operation = operation
     res.data_size_label = data_size_label

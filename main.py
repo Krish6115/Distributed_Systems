@@ -92,6 +92,15 @@ def run_experiments(
     for algo_name in algorithms:
         module = ALGO_MODULES[algo_name]
         key = module.generate_key()
+
+        # ── Warmup: prime the module to avoid cold-start overhead ──
+        # The first-ever call loads C extensions, triggers page faults,
+        # and initialises tracemalloc — all of which inflate timing.
+        # A single throwaway encrypt+decrypt eliminates this artefact.
+        _warmup_data = generate_iot_data(64)
+        _wn, _wc, _wt = module.encrypt(_warmup_data, key)
+        module.decrypt(_wn, _wc, _wt, key)
+
         logging.info(f"\n{'─' * 50}")
         logging.info(f"  Algorithm: {algo_name}  (key={len(key)*8} bits)")
         logging.info(f"{'─' * 50}")

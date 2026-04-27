@@ -1,0 +1,102 @@
+2026-04-27 23:34:55,365  INFO      ======================================================================
+2026-04-27 23:34:55,366  INFO        EDGE DEVICE ENCRYPTION BENCHMARK
+2026-04-27 23:34:55,366  INFO      ======================================================================
+2026-04-27 23:34:55,367  INFO        Algorithms : AES, ChaCha20, PRESENT, SPECK
+2026-04-27 23:34:55,367  INFO        Data sizes : 1KB, 10KB, 100KB
+2026-04-27 23:34:55,367  INFO        Iterations : 5
+2026-04-27 23:34:55,367  INFO        Total runs : 120
+2026-04-27 23:34:55,367  INFO      ======================================================================
+2026-04-27 23:34:55,393  INFO      
+──────────────────────────────────────────────────
+2026-04-27 23:34:55,399  INFO        Algorithm: AES  (key=256 bits)
+2026-04-27 23:34:55,399  INFO      ──────────────────────────────────────────────────
+2026-04-27 23:34:55,401  INFO        [AES] data_size=1KB (1024 bytes)
+2026-04-27 23:34:55,482  INFO        [   1/120]   0.8%  AES        enc  1KB    iter=1  time=     0.817ms  throughput=    1.20MB/s
+2026-04-27 23:34:55,573  INFO        [   2/120]   1.7%  AES        dec  1KB    iter=1  time=     0.810ms  throughput=    1.20MB/s
+2026-04-27 23:34:55,664  INFO        [   3/120]   2.5%  AES        enc  1KB    iter=2  time=     0.831ms  throughput=    1.18MB/s
+2026-04-27 23:34:55,761  INFO        [   4/120]   3.3%  AES        dec  1KB    iter=2  time=     1.123ms  throughput=    0.87MB/s
+2026-04-27 23:34:55,859  INFO        [   5/120]   4.2%  AES        enc  1KB    iter=3  time=     1.086ms  throughput=    0.90MB/s
+2026-04-27 23:34:55,942  INFO        [   6/120]   5.0%  AES        dec  1KB    iter=3  time=     1.572ms  throughput=    0.62MB/s
+2026-04-27 23:34:56,026  INFO        [   7/120]   5.8%  AES        enc  1KB    iter=4  time=     1.416ms  throughput=    0.69MB/s
+2026-04-27 23:34:56,116  INFO        [   8/120]   6.7%  AES        dec  1KB    iter=4  time=     1.477ms  throughput=    0.66MB/s
+2026-04-27 23:34:56,210  INFO        [   9/120]   7.5%  AES        enc  1KB    iter=5  time=     1.004ms  throughput=    0.97MB/s
+2026-04-27 23:34:56,307  INFO        [  10/120]   8.3%  AES        dec  1KB    iter=5  time=     1.179ms  throughput=    0.83MB/s
+2026-04-27 23:34:56,312  INFO        [AES] data_size=10KB (10240 bytes)
+2026-04-27 23:34:56,401  INFO        [  11/120]   9.2%  AES        enc  10KB   iter=1  time=     1.227ms  throughput=    7.96MB/s
+2026-04-27 23:34:56,493  INFO        [  12/120]  10.0%  AES        dec  10KB   iter=1  time=     1.444ms  throughput=    6.76MB/s
+2026-04-27 23:34:56,588  INFO        [  13/120]  10.8%  AES        enc  10KB   iter=2  time=     0.984ms  throughput=    9.92MB/s
+2026-04-27 23:34:56,642  INFO        [  14/120]  11.7%  AES        dec  10KB   iter=2  time=     1.705ms  throughput=    5.73MB/s
+2026-04-27 23:34:56,728  INFO        [  15/120]  12.5%  AES        enc  10KB   iter=3  time=     1.431ms  throughput=    6.82MB/s
+2026-04-27 23:34:56,781  INFO        [  16/120]  13.3%  AES        dec  10KB   iter=3  time=     1.407ms  throughput=    6.94MB/s
+2026-04-27 23:34:56,864  INFO        [  17/120]  14.2%  AES        enc  10KB   iter=4  time=     1.409ms  throughput=    6.93MB/s
+2026-04-27 23:34:56,968  INFO        [  18/120]  15.0%  AES        dec  10KB   iter=4  time=     1.113ms  throughput=    8.77MB/s
+2026-04-27 23:34:57,065  INFO        [  19/120]  15.8%  AES        enc  10KB   iter=5  time=     1.169ms  throughput=    8.36MB/s
+2026-04-27 23:34:57,174  INFO        [  20/120]  16.7%  AES        dec  10KB   iter=5  time=     1.053ms  throughput=    9.27MB/s
+2026-04-27 23:34:57,198  INFO        [AES] data_size=100KB (102400 bytes)
+2026-04-27 23:34:57,315  INFO        [  21/120]  17.5%  AES        enc  100KB  iter=1  time=     1.236ms  throughput=   78.98MB/s
+2026-04-27 23:34:57,431  INFO        [  22/120]  18.3%  AES        dec  100KB  iter=1  time=     1.498ms  throughput=   65.19MB/s
+2026-04-27 23:34:57,571  INFO        [  23/120]  19.2%  AES        enc  100KB  iter=2  time=     0.977ms  throughput=   99.96MB/s
+2026-04-27 23:34:57,626  INFO        [  24/120]  20.0%  AES        dec  100KB  iter=2  time=     2.972ms  throughput=   32.86MB/s
+2026-04-27 23:34:57,750  INFO        [  25/120]  20.8%  AES        enc  100KB  iter=3  time=     1.320ms  throughput=   74.01MB/s
+2026-04-27 23:34:57,867  INFO        [  26/120]  21.7%  AES        dec  100KB  iter=3  time=     1.486ms  throughput=   65.71MB/s
+2026-04-27 23:34:58,021  INFO        [  27/120]  22.5%  AES        enc  100KB  iter=4  time=     0.938ms  throughput=  104.09MB/s
+2026-04-27 23:34:58,147  INFO        [  28/120]  23.3%  AES        dec  100KB  iter=4  time=     1.717ms  throughput=   56.87MB/s
+2026-04-27 23:34:58,244  INFO        [  29/120]  24.2%  AES        enc  100KB  iter=5  time=     2.315ms  throughput=   42.19MB/s
+2026-04-27 23:34:58,297  INFO        [  30/120]  25.0%  AES        dec  100KB  iter=5  time=     1.106ms  throughput=   88.30MB/s
+2026-04-27 23:34:58,299  INFO        [AES] Edge pipeline integrity: ✓ PASS
+2026-04-27 23:34:58,302  INFO      
+──────────────────────────────────────────────────
+2026-04-27 23:34:58,305  INFO        Algorithm: ChaCha20  (key=256 bits)
+2026-04-27 23:34:58,305  INFO      ──────────────────────────────────────────────────
+2026-04-27 23:34:58,309  INFO        [ChaCha20] data_size=1KB (1024 bytes)
+2026-04-27 23:34:58,408  INFO        [  31/120]  25.8%  ChaCha20   enc  1KB    iter=1  time=     0.558ms  throughput=    1.75MB/s
+2026-04-27 23:34:58,485  INFO        [  32/120]  26.7%  ChaCha20   dec  1KB    iter=1  time=     1.833ms  throughput=    0.53MB/s
+2026-04-27 23:34:58,584  INFO        [  33/120]  27.5%  ChaCha20   enc  1KB    iter=2  time=     0.441ms  throughput=    2.22MB/s
+2026-04-27 23:34:58,666  INFO        [  34/120]  28.3%  ChaCha20   dec  1KB    iter=2  time=     1.278ms  throughput=    0.76MB/s
+2026-04-27 23:34:58,719  INFO        [  35/120]  29.2%  ChaCha20   enc  1KB    iter=3  time=     0.834ms  throughput=    1.17MB/s
+2026-04-27 23:34:58,823  INFO        [  36/120]  30.0%  ChaCha20   dec  1KB    iter=3  time=     0.801ms  throughput=    1.22MB/s
+2026-04-27 23:34:58,911  INFO        [  37/120]  30.8%  ChaCha20   enc  1KB    iter=4  time=     0.874ms  throughput=    1.12MB/s
+2026-04-27 23:34:59,004  INFO        [  38/120]  31.7%  ChaCha20   dec  1KB    iter=4  time=     0.832ms  throughput=    1.17MB/s
+2026-04-27 23:34:59,095  INFO        [  39/120]  32.5%  ChaCha20   enc  1KB    iter=5  time=     0.769ms  throughput=    1.27MB/s
+2026-04-27 23:34:59,192  INFO        [  40/120]  33.3%  ChaCha20   dec  1KB    iter=5  time=     0.845ms  throughput=    1.16MB/s
+2026-04-27 23:34:59,195  INFO        [ChaCha20] data_size=10KB (10240 bytes)
+2026-04-27 23:34:59,340  INFO        [  41/120]  34.2%  ChaCha20   enc  10KB   iter=1  time=     0.561ms  throughput=   17.41MB/s
+2026-04-27 23:34:59,463  INFO        [  42/120]  35.0%  ChaCha20   dec  10KB   iter=1  time=     1.254ms  throughput=    7.79MB/s
+2026-04-27 23:34:59,593  INFO        [  43/120]  35.8%  ChaCha20   enc  10KB   iter=2  time=     0.868ms  throughput=   11.25MB/s
+2026-04-27 23:34:59,728  INFO        [  44/120]  36.7%  ChaCha20   dec  10KB   iter=2  time=     0.981ms  throughput=    9.95MB/s
+2026-04-27 23:34:59,781  INFO        [  45/120]  37.5%  ChaCha20   enc  10KB   iter=3  time=     1.650ms  throughput=    5.92MB/s
+2026-04-27 23:34:59,926  INFO        [  46/120]  38.3%  ChaCha20   dec  10KB   iter=3  time=     0.807ms  throughput=   12.10MB/s
+2026-04-27 23:35:00,036  INFO        [  47/120]  39.2%  ChaCha20   enc  10KB   iter=4  time=     1.080ms  throughput=    9.04MB/s
+2026-04-27 23:35:00,133  INFO        [  48/120]  40.0%  ChaCha20   dec  10KB   iter=4  time=     1.337ms  throughput=    7.30MB/s
+2026-04-27 23:35:00,246  INFO        [  49/120]  40.8%  ChaCha20   enc  10KB   iter=5  time=     1.014ms  throughput=    9.64MB/s
+2026-04-27 23:35:00,338  INFO        [  50/120]  41.7%  ChaCha20   dec  10KB   iter=5  time=     2.036ms  throughput=    4.80MB/s
+2026-04-27 23:35:00,357  INFO        [ChaCha20] data_size=100KB (102400 bytes)
+2026-04-27 23:35:00,550  INFO        [  51/120]  42.5%  ChaCha20   enc  100KB  iter=1  time=     2.455ms  throughput=   39.78MB/s
+2026-04-27 23:35:00,745  INFO        [  52/120]  43.3%  ChaCha20   dec  100KB  iter=1  time=     2.586ms  throughput=   37.77MB/s
+2026-04-27 23:35:00,920  INFO        [  53/120]  44.2%  ChaCha20   enc  100KB  iter=2  time=     3.006ms  throughput=   32.48MB/s
+2026-04-27 23:35:01,078  INFO        [  54/120]  45.0%  ChaCha20   dec  100KB  iter=2  time=     3.746ms  throughput=   26.07MB/s
+2026-04-27 23:35:01,354  INFO        [  55/120]  45.8%  ChaCha20   enc  100KB  iter=3  time=     1.453ms  throughput=   67.19MB/s
+2026-04-27 23:35:01,535  INFO        [  56/120]  46.7%  ChaCha20   dec  100KB  iter=3  time=     2.615ms  throughput=   37.34MB/s
+2026-04-27 23:35:01,751  INFO        [  57/120]  47.5%  ChaCha20   enc  100KB  iter=4  time=     1.986ms  throughput=   49.18MB/s
+2026-04-27 23:35:01,930  INFO        [  58/120]  48.3%  ChaCha20   dec  100KB  iter=4  time=     2.596ms  throughput=   37.62MB/s
+2026-04-27 23:35:01,984  INFO        [  59/120]  49.2%  ChaCha20   enc  100KB  iter=5  time=     2.055ms  throughput=   47.53MB/s
+2026-04-27 23:35:02,131  INFO        [  60/120]  50.0%  ChaCha20   dec  100KB  iter=5  time=     4.453ms  throughput=   21.93MB/s
+2026-04-27 23:35:02,133  INFO        [ChaCha20] Edge pipeline integrity: ✓ PASS
+2026-04-27 23:35:02,164  INFO      
+──────────────────────────────────────────────────
+2026-04-27 23:35:02,168  INFO        Algorithm: PRESENT  (key=80 bits)
+2026-04-27 23:35:02,168  INFO      ──────────────────────────────────────────────────
+2026-04-27 23:35:02,171  INFO        [PRESENT] data_size=1KB (1024 bytes)
+2026-04-27 23:35:03,813  INFO        [  61/120]  50.8%  PRESENT    enc  1KB    iter=1  time=  1589.577ms  throughput=    0.00MB/s
+2026-04-27 23:35:05,542  INFO        [  62/120]  51.7%  PRESENT    dec  1KB    iter=1  time=  1678.262ms  throughput=    0.00MB/s
+2026-04-27 23:35:07,211  INFO        [  63/120]  52.5%  PRESENT    enc  1KB    iter=2  time=  1617.055ms  throughput=    0.00MB/s
+2026-04-27 23:35:08,761  INFO        [  64/120]  53.3%  PRESENT    dec  1KB    iter=2  time=  1498.045ms  throughput=    0.00MB/s
+2026-04-27 23:35:10,258  INFO        [  65/120]  54.2%  PRESENT    enc  1KB    iter=3  time=  1446.033ms  throughput=    0.00MB/s
+2026-04-27 23:35:11,644  INFO        [  66/120]  55.0%  PRESENT    dec  1KB    iter=3  time=  1333.726ms  throughput=    0.00MB/s
+2026-04-27 23:35:13,096  INFO        [  67/120]  55.8%  PRESENT    enc  1KB    iter=4  time=  1400.551ms  throughput=    0.00MB/s
+2026-04-27 23:35:14,560  INFO        [  68/120]  56.7%  PRESENT    dec  1KB    iter=4  time=  1412.143ms  throughput=    0.00MB/s
+2026-04-27 23:35:16,234  INFO        [  69/120]  57.5%  PRESENT    enc  1KB    iter=5  time=  1622.843ms  throughput=    0.00MB/s
+2026-04-27 23:35:17,935  INFO        [  70/120]  58.3%  PRESENT    dec  1KB    iter=5  time=  1649.144ms  throughput=    0.00MB/s
+2026-04-27 23:35:17,938  INFO        [PRESENT] data_size=10KB (10240 bytes)
+2026-04-27 23:35:34,293  INFO        [  71/120]  59.2%  PRESENT    enc  10KB   iter=1  time= 16303.073ms  throughput=    0.00MB/s
+2026-04-27 23:35:50,283  INFO        [  72/120]  60.0%  PRESENT    dec  10KB   iter=1  time= 15937.905ms  throughput=    0.00MB/s

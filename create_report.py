@@ -159,10 +159,10 @@ for j, h in enumerate(res_headers):
         p.runs[0].font.size = Pt(10)
 
 res_data = [
-    ["AES-256-GCM", "3.811", "65.5", "51.6", "27.14", "7.0"],
-    ["ChaCha20-Poly1305", "0.993", "120.0", "39.0", "29.85", "7.0"],
-    ["PRESENT-80", "13,783.90", "96.2", "79.1", "0.003", "15.0"],
-    ["SPECK-64/128", "1,181.88", "85.7", "79.0", "0.04", "11.0"],
+    ["AES-256-GCM", "1.06", "179.1", "76.5", "35.80", "6.0"],
+    ["ChaCha20-Poly1305", "1.16", "143.1", "75.0", "22.69", "7.0"],
+    ["PRESENT-80", "48,294.17", "88.6", "78.8", "0.001", "14.0"],
+    ["SPECK-64/128", "2,091.74", "95.3", "78.7", "0.017", "13.0"],
 ]
 for i, row_data in enumerate(res_data):
     for j, val in enumerate(row_data):
@@ -177,19 +177,30 @@ doc.add_paragraph("Composite Score: Each algorithm is ranked 1-4 on throughput (
 doc.add_paragraph()
 
 p = doc.add_paragraph()
-p.add_run("Best Overall (tied): AES-256-GCM & ChaCha20-Poly1305 (Score: 7.0). ").bold = True
-p.add_run("AES wins on CPU efficiency due to hardware AES-NI acceleration. ChaCha20 wins on throughput and memory. On devices without AES-NI (most microcontrollers), ChaCha20 is the clear winner.")
+p.add_run("Best Overall: AES-256-GCM (Score: 6.0). ").bold = True
+p.add_run("AES wins on latency and throughput due to hardware AES-NI acceleration. ChaCha20 is the best choice on devices without AES-NI hardware acceleration.")
 
 doc.add_heading('Key Observations from Graphs', level=2)
 p = doc.add_paragraph()
 p.add_run("Throughput: ").bold = True
-p.add_run("AES and ChaCha20 achieve ~65-67 MB/s at 100KB. PRESENT and SPECK are orders of magnitude slower in pure Python.\n")
+p.add_run("AES achieves ~94 MB/s and ChaCha20 ~50 MB/s at 100KB. PRESENT and SPECK are orders of magnitude slower in pure Python.\n")
 p.add_run("Encryption Time: ").bold = True
-p.add_run("PRESENT takes ~37 seconds for 100KB. SPECK takes ~3 seconds. AES/ChaCha20 complete in under 2ms.\n")
+p.add_run("PRESENT takes ~127 seconds for 100KB. SPECK takes ~5.6 seconds. AES completes in ~1.2ms and ChaCha20 in ~2.1ms.\n")
 p.add_run("CPU Usage: ").bold = True
-p.add_run("Lightweight ciphers saturate a single CPU core (~95-100%) due to intensive bit manipulation.\n")
+p.add_run("All algorithms now show accurate measured CPU utilization (~88-179%) thanks to calibrated cpu_times() profiling with a calibration loop for sub-millisecond operations.\n")
 p.add_run("Memory: ").bold = True
-p.add_run("At 100KB, AES uses ~102KB, ChaCha20 ~100KB, PRESENT ~210KB, SPECK ~210KB peak memory.")
+p.add_run("At 100KB: AES ~202KB, ChaCha20 ~201KB, PRESENT ~211KB, SPECK ~210KB peak memory.")
+
+doc.add_heading('Why Single-Node Benchmarking AND Distributed Simulation?', level=2)
+p2 = doc.add_paragraph()
+p2.add_run("Single-Node Benchmarking: ").bold = True
+p2.add_run("Establishes the performance baseline for each algorithm in isolation. Without this, distributed scalability cannot be measured. "
+    "Testing across 1KB, 10KB, and 100KB payloads reveals each algorithm's setup overhead vs. processing cost curve, identifying the ideal network packet size. "
+    "It also isolates exact CPU% and peak RAM per device, proving whether the algorithm is physically deployable on constrained IoT hardware.\n\n")
+p2.add_run("Distributed Simulation: ").bold = True
+p2.add_run("Real IoT deployments involve thousands of nodes encrypting concurrently. A single-node test cannot capture inter-node overhead or parallel contention. "
+    "By distributing a fixed 100KB workload across N=5 to N=1000 nodes, we prove near-linear throughput scaling for AES/ChaCha20. "
+    "Key finding: AES and ChaCha20 scale almost perfectly, while PRESENT and SPECK's process overhead exceeds their encryption time at high node counts.")
 
 # ═══ 5. Conclusion ═══
 doc.add_heading('5. Conclusion', level=1)
